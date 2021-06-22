@@ -67,7 +67,7 @@ OWNER_MOTECH = """
 📃 Source Code : /source
 """
 
-MRK_IMG=ABOUT_IMG
+MRK_IMG="https://telegra.ph/file/0a6027df39336a7c35446.jpg"
 
 DONATE_IMG="https://telegra.ph/file/0acfce638eb78e4a6d9c6.jpg"
 
