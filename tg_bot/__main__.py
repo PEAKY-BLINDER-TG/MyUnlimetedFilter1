@@ -835,7 +835,7 @@ def main():
      else:
          updater.bot.set_webhook(url=URL + TOKEN)
 
-    else:
+     else:
         LOGGER.info("Using long polling.")
         updater.start_polling(timeout=15, read_latency=4)
 
