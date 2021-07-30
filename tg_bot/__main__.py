@@ -212,7 +212,7 @@ def help_button(bot: Bot, update: Update):
            LOGGER.exception("Exception in help buttons. %s", str(query.data))
 
 @run_async
-def tg_bot_about_callback(update, context):
+def tg_bot_about_callback(bot: Bot, update: Update):
     query = update.callback_query
     if query.data == "aboutmanu_":
         query.message.edit_text(
