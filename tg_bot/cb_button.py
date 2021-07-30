@@ -12,10 +12,13 @@ async def callback_data(mt_id_bot, update: CallbackQuery):
 
     if query_data == "start":
     
-        reply_markup = CB_START
+        reply_markup = InlineKeyboardMarkup( [[
+       InlineKeyboardButton("Hi", url="t.me/mo_tech_yt")
+       ]]
+       )
         
         await update.message.edit_text(
-            START_MSG,
+            """hi""",
             reply_markup=reply_markup,
             parse_mode="html",
             disable_web_page_preview=True
