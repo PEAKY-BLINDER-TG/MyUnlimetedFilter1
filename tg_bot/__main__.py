@@ -178,7 +178,7 @@ def start(bot: Bot, update: Update, args: List[str]):
                 parse_mode=ParseMode.MARKDOWN,
                 disable_web_page_preview=True,
                 reply_markup=InlineKeyboardMarkup(
-                    [[InlineKeyboardButton(text="🤔Help", url="https://t.me/{}?start=help".format(bot.username)), InlineKeyboardButton(text="🔊Updates", callback_data="aboutmanu_"), InlineKeyboardButton(text="🤖Bot List", url="https://t.me/Mo_Tech_YT/176")],
+                    [[InlineKeyboardButton(text="🤔Help", url="https://t.me/{}?start=help".format(bot.username)), InlineKeyboardButton(text="🔊Updates", callback_data="aboutmanu_permis"), InlineKeyboardButton(text="🤖Bot List", url="https://t.me/Mo_Tech_YT/176")],
                     [InlineKeyboardButton(text="🔻Subscribe Now YouTube🔻", url="https://youtu.be/wKL90i3cjPw")]]))
     else:
         update.effective_message.reply_text("ചത്തിട്ടില്ലാ...😁")
