@@ -31,10 +31,8 @@ from telegram.ext import (
     Filters,
     MessageHandler,
 )
-from telegram.ext.dispatcher import DispatcherHandlerStop, run_async
-from telegram.utils.helpers import escape_markdown
 
-from DaisyX import (
+from tg_bot import (
     ALLOW_EXCL,
     BL_CHATS,
     CERT_PATH,
@@ -56,11 +54,10 @@ from DaisyX import (
 
 # needed to dynamically load modules
 # NOTE: Module order is not guaranteed, specify that in the config file!
-from DaisyX.modules import ALL_MODULES
-from DaisyX.modules.helper_funcs.alternate import typing_action
-from DaisyX.modules.helper_funcs.chat_status import is_user_admin
-from DaisyX.modules.helper_funcs.misc import paginate_modules
-from DaisyX.modules.helper_funcs.readable_time import get_readable_time
+from tg_bot.modules import ALL_MODULES
+from tg_bot.modules.helper_funcs.chat_status import is_user_admin
+from tg_bot.modules.helper_funcs.misc import paginate_modules
+
 
 PM_START_TEXT = """
 Hello there, I'm [𝔥𝔦𝔧𝔞𝔟𝔦 𝔮𝔲𝔢𝔢𝔫](https://telegra.ph/file/f161928cf7b133b43d34c.jpg)
