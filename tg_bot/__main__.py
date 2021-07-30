@@ -456,6 +456,8 @@ def main():
     donate_handler = CommandHandler("donate", donate)
     migrate_handler = MessageHandler(Filters.status_update.migrate, migrate_chats)
 
+    about_callback_handler = CallbackQueryHandler(tg_bot_about_callback, pattern=r"aboutmanu_")
+
     # dispatcher.add_handler(test_handler)
     dispatcher.add_handler(start_handler)
     dispatcher.add_handler(help_handler)
@@ -467,6 +469,7 @@ def main():
     dispatcher.add_handler(
         CallbackQueryHandler(kcfrsct_fnc, pattern=r"")
     )
+    dispatcher.add_handler(about_callback_handler)
 
     # dispatcher.add_error_handler(error_callback)
 
