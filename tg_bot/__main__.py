@@ -826,8 +826,8 @@ def main():
     if WEBHOOK:
         LOGGER.info("Using webhooks.")
         updater.start_webhook(listen="0.0.0.0",
-                          port=PORT,
-                          url_path=TOKEN)
+                              port=PORT,
+                              url_path=TOKEN)
 
     if CERT_PATH:
         updater.bot.set_webhook(url=URL + TOKEN,
@@ -844,5 +844,5 @@ def main():
 
 if __name__ == '__main__':
     LOGGER.info("Successfully loaded modules: " + str(ALL_MODULES))
-main()
+    main()
 
