@@ -655,6 +655,9 @@ def main():
     credit_handler = CommandHandler("credit", credit)
     support_handler = CommandHandler("support", support)
     about_handler = CommandHandler("about", about)
+    about_callback_handler = CallbackQueryHandler(
+        tg_bot_about_callback, pattern=r"aboutmanu_"
+    )
 
     # dispatcher.add_handler(test_handler)
     dispatcher.add_handler(start_handler)
@@ -671,6 +674,8 @@ def main():
     dispatcher.add_handler(credit_handler)
     dispatcher.add_handler(support_handler)
     dispatcher.add_handler(about_handler)
+    dispatcher.add_handler(about_callback_handler)
+    dispatcher.add_handler(help_callback_handler)
 
     # dispatcher.add_error_handler(error_callback)
 
