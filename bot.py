@@ -6,7 +6,6 @@ logging.basicConfig(level=logging.DEBUG,
 logger = llogging.getLogger("pyrogram").setLevel(logging.WARNING)ogging.getLogger(__name__)
 
 from pyrogram import Client 
-from tg_bot import TOKEN
 
 if __name__ == "__main__" :
     plugins = dict(
