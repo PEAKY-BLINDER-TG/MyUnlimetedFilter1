@@ -14,7 +14,7 @@ if __name__ == "__main__" :
     )
     mt_botz = Client(
         "MT ID BOT",
-        bot_token=TOKEN,
+        bot_token=os.environ.get("TOKEN"),
         api_id="1517558",
         api_hash="7f6fbfd179b27e8f6188dccff9c196ee",
         plugins=plugins,
