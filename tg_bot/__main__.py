@@ -127,7 +127,7 @@ def start(bot: Bot, update: Update, args: List[str]):
 
                 parse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(
                     [[InlineKeyboardButton(text="⭕️ Command Help ⭕️", url="https://t.me/{}?start=help".format(bot.username))],
-                     [InlineKeyboardButton(text="📢Updates", url="t.me/mo_tech_yt"), InlineKeyboardButton(text="❣️Video", url="https://youtu.be/wKL90i3cjPw"), InlineKeyboardButton(text="🤠Credits", url="https://github.com/jithumon/tgbot/graphs/contributors")],
+                     [InlineKeyboardButton(text="📢Updates", callback_data="aboutmanu_"), InlineKeyboardButton(text="❣️Video", url="https://youtu.be/wKL90i3cjPw"), InlineKeyboardButton(text="🤠Credits", url="https://github.com/jithumon/tgbot/graphs/contributors")],
                      [InlineKeyboardButton(text="➕ Add me to your group ➕", url="t.me/{}?startgroup=true".format(bot.username)) ]]))
     else:
         update.effective_message.reply_text("ചത്തിട്ടില്ലാ...")
@@ -209,8 +209,39 @@ def help_button(bot: Bot, update: Update):
         elif excp.message == "Message can't be deleted":
             pass
         else:
-            LOGGER.exception("Exception in help buttons. %s", str(query.data))
+           LOGGER.exception("Exception in help buttons. %s", str(query.data))
 
+@run_async
+def tg_bot_about_callback(update, context):
+    query = update.callback_query
+    if query.data == "aboutmanu_":
+        query.message.edit_text(
+            text=f"*😍 Hi again!  The name's {dispatcher.bot.first_name} 😍 \n\nAs  You I'm a next generational group management bot developed by Infinity_Bots.* "
+            f"\n\n 🔥 Join [Nesriya updates](https://t.me/NN_NAZRIYANAZEEM_BETA) To Keep Yourself Updated About {dispatcher.bot.first_name} 🔥"
+            f"\n\n I have the normal GROUP MANAGING functions like flood control, a warning system etc but I mainly have the advanced and handy Antispam system and the SIBYL banning system which safegaurds and helps your group from spammers."
+            f"\n\nI Can Manage Your Groups Smoothly, With Some Special Features [:)](https://telegra.ph/file/f161928cf7b133b43d34c.jpg)"
+            f"\n\n👇 You Can Know More About Me By Clicking The Below Buttons 👇",
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            text="How To Use Me", callback_data="aboutmanu_howto"
+                        ),
+                        InlineKeyboardButton(
+                            text="T & C", callback_data="aboutmanu_tac"
+                        ),
+                    ],
+                    [
+                        InlineKeyboardButton(
+                            text="❔Help & Commands", callback_data="help_back"
+                        )
+                    ],
+                    [InlineKeyboardButton(text="Back", callback_data="aboutmanu_back")],
+                ]
+            ),
+        )
 
 @run_async
 def get_help(bot: Bot, update: Update):
