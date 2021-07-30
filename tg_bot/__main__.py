@@ -836,10 +836,10 @@ def main():
          updater.bot.set_webhook(url=URL + TOKEN)
 
      else:
-        LOGGER.info("Using long polling.")
-        updater.start_polling(timeout=15, read_latency=4)
+         LOGGER.info("Using long polling.")
+         updater.start_polling(timeout=15, read_latency=4)
 
-        updater.idle()
+         updater.idle()
 
 
 if __name__ == '__main__':
