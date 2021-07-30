@@ -6,15 +6,15 @@ logging.basicConfig(level=logging.DEBUG,
 logger = llogging.getLogger("pyrogram").setLevel(logging.WARNING)ogging.getLogger(__name__)
 
 from pyrogram import Client 
-from files import TOKEN
+from tg_bot import TOKEN
 
 if __name__ == "__main__" :
     plugins = dict(
-        root="t"
+        root="tg_bot"
     )
     mt_botz = Client(
         "MT ID BOT",
-        bot_token=BOT_TOKEN,
+        bot_token=TOKEN,
         api_id="1517558",
         api_hash="7f6fbfd179b27e8f6188dccff9c196ee",
         plugins=plugins,
