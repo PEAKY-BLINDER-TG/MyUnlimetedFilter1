@@ -8,6 +8,7 @@ from telegram.error import Unauthorized, BadRequest, TimedOut, NetworkError, Cha
 from telegram.ext import CommandHandler, Filters, MessageHandler, CallbackQueryHandler
 from telegram.ext.dispatcher import run_async, DispatcherHandlerStop
 from telegram.utils.helpers import escape_markdown
+from pyrogram.types import CallbackQuery
 
 from tg_bot import dispatcher, updater, TOKEN, WEBHOOK, OWNER_ID, DONATION_LINK, CERT_PATH, PORT, URL, LOGGER, \
     ALLOW_EXCL
@@ -127,7 +128,7 @@ def start(bot: Bot, update: Update, args: List[str]):
 
                 parse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(
                     [[InlineKeyboardButton(text="⭕️ Command Help ⭕️", url="https://t.me/{}?start=help".format(bot.username))],
-                     [InlineKeyboardButton(text="📢Updates", callback_data="aboutmanu_"), InlineKeyboardButton(text="❣️Video", url="https://youtu.be/wKL90i3cjPw"), InlineKeyboardButton(text="🤠Credits", url="https://github.com/jithumon/tgbot/graphs/contributors")],
+                     [InlineKeyboardButton(text="📢Updates", callback_data="start"), InlineKeyboardButton(text="❣️Video", url="https://youtu.be/wKL90i3cjPw"), InlineKeyboardButton(text="🤠Credits", url="https://github.com/jithumon/tgbot/graphs/contributors")],
                      [InlineKeyboardButton(text="➕ Add me to your group ➕", url="t.me/{}?startgroup=true".format(bot.username)) ]]))
     else:
         update.effective_message.reply_text("ചത്തിട്ടില്ലാ...")
