@@ -25,7 +25,6 @@ from telegram.error import (
     Unauthorized,
 )
 from telegram.ext import (
-    CallbackContext,
     CallbackQueryHandler,
     CommandHandler,
     Filters,
@@ -115,7 +114,7 @@ USER_SETTINGS = {}
 GDPR = []
 
 for module_name in ALL_MODULES:
-    imported_module = importlib.import_module("DaisyX.modules." + module_name)
+    imported_module = importlib.import_module("tg_bot.modules." + module_name)
     if not hasattr(imported_module, "__mod_name__"):
         imported_module.__mod_name__ = imported_module.__name__
 
