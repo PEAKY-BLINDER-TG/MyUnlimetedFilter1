@@ -263,7 +263,7 @@ def help_button(bot: Bot, update: Update):
             LOGGER.exception("Exception in help buttons. %s", str(query.data))
 
 @run_async
-def tg_bot_about_callback(update, context):
+def TgBot_about_callback(update, context):
     query = update.callback_query
     if query.data == "aboutmanu_":
         query.message.edit_text(
@@ -656,7 +656,7 @@ def main():
     support_handler = CommandHandler("support", support)
     about_handler = CommandHandler("about", about)
     about_callback_handler = CallbackQueryHandler(
-        tg_bot_about_callback, pattern=r"aboutmanu_"
+        TgBot_about_callback, pattern=r"aboutmanu_"
     )
 
     # dispatcher.add_handler(test_handler)
