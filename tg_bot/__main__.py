@@ -133,56 +133,18 @@ def start(bot: Bot, update: Update, args: List[str]):
     else:
         update.effective_message.reply_text("ചത്തിട്ടില്ലാ...")
 
-def send_start(update, context):
-    # Try to remove old message
-    try:
-        query = update.callback_query
-        query.message.delete()
-    except BaseException:
-        pass
+@run_async.on_callback_query()
+async def cb_handler(bot: Bot, update: Update):
 
-    chat = update.effective_chat  # type: Optional[Chat]
-    first_name = update.effective_user.first_name
-    text = PM_START_TEXT
-    buttons = [[InlineKeyboardButton(text="🎀HELP🎀",
-                                  callback_data="help_back"),
-    ]]
-             
-
-    buttons += [[InlineKeyboardButton(text="🎀CLOSE🎀",
-                                  callback_data="close_menu")]]
-
-
-    update.effective_message.reply_text(
-        PM_START_TEXT,
-        reply_markup=InlineKeyboardMarkup(buttons),
-        parse_mode=ParseMode.MARKDOWN,
-        timeout=60,
-        disable_web_page_preview=False,
-    )
-
-
-def start_stop(update, context):
-    # Try to remove old message
-    try:
-        query = update.callback_query
-        query.message.delete()
-    except BaseException:
-        pass
-
-    chat = update.effective_chat  # type: Optional[Chat]
-    first_name = update.effective_user.first_name
-    text = "The menu is closed 🔒"
-    buttons = [[InlineKeyboardButton(text="🎀REOPEN🎀",
-                                     callback_data="bot_start")]]
-
-    update.effective_message.reply_text(
-        text,
-        reply_markup=InlineKeyboardMarkup(buttons),
-        parse_mode=ParseMode.MARKDOWN,
-        timeout=60,
-        disable_web_page_preview=False,
-    )
+    if query.data == "start_data":
+        await query.answer()
+        keyboard = InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton("Command Help", callback_data="help_data")
+                ]
+            ]
+        )
 
 
 # for test purposes
