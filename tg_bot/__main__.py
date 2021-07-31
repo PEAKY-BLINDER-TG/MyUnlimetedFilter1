@@ -553,8 +553,7 @@ def memory(percentage=0.5):
 def main():
     test_handler = CommandHandler("test", test)
     start_handler = CommandHandler("start", start, pass_args=True)
-    start_callback_handler = CallbackQueryHandler(
-        send_start, pattern=r"bot_start")
+   
 
     IMDB_HANDLER = CommandHandler('imdb', imdb, pass_args=True)
     IMDB_SEARCHDATAHANDLER = CallbackQueryHandler(imdb_searchdata)
