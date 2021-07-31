@@ -18,11 +18,11 @@ from tg_bot.modules import ALL_MODULES
 from tg_bot.modules.helper_funcs.chat_status import is_user_admin
 from tg_bot.modules.helper_funcs.misc import paginate_modules
 
-PM_START_TEXT = """😡
+PM_START_TEXT = """😡ajajajaj
 """
 
 HELP_STRINGS = """
-🥵
+🥵jJaajajajaja
 """.format(dispatcher.bot.first_name, "" if not ALLOW_EXCL else "\nAll commands can either be used with / or !.\n")
 
 DONATE_STRING = """ *🙋‍♂️Hello Bro or Sis*!
@@ -132,6 +132,57 @@ def start(bot: Bot, update: Update, args: List[str]):
                      [InlineKeyboardButton(text="➕ Add me to your group ➕", url="t.me/{}?startgroup=true".format(bot.username)) ]]))
     else:
         update.effective_message.reply_text("ചത്തിട്ടില്ലാ...")
+
+def send_start(update, context):
+    # Try to remove old message
+    try:
+        query = update.callback_query
+        query.message.delete()
+    except BaseException:
+        pass
+
+    chat = update.effective_chat  # type: Optional[Chat]
+    first_name = update.effective_user.first_name
+    text = PM_START_TEXT
+    buttons = [[InlineKeyboardButton(text="🎀HELP🎀",
+                                  callback_data="help_back"),
+    ]]
+             
+
+    buttons += [[InlineKeyboardButton(text="🎀CLOSE🎀",
+                                  callback_data="close_menu")]]
+
+
+    update.effective_message.reply_text(
+        PM_START_TEXT,
+        reply_markup=InlineKeyboardMarkup(buttons),
+        parse_mode=ParseMode.MARKDOWN,
+        timeout=60,
+        disable_web_page_preview=False,
+    )
+
+
+def start_stop(update, context):
+    # Try to remove old message
+    try:
+        query = update.callback_query
+        query.message.delete()
+    except BaseException:
+        pass
+
+    chat = update.effective_chat  # type: Optional[Chat]
+    first_name = update.effective_user.first_name
+    text = "The menu is closed 🔒"
+    buttons = [[InlineKeyboardButton(text="🎀REOPEN🎀",
+                                     callback_data="bot_start")]]
+
+    update.effective_message.reply_text(
+        text,
+        reply_markup=InlineKeyboardMarkup(buttons),
+        parse_mode=ParseMode.MARKDOWN,
+        timeout=60,
+        disable_web_page_preview=False,
+    )
 
 
 # for test purposes
