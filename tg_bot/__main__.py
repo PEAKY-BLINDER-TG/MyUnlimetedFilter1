@@ -494,12 +494,114 @@ def kcfrsct_fnc(bot: Bot, update: Update):
             print(e)
             bot.answer_callback_query(query.id)
 
+@run_async
+def imdb_searchdata(bot: Bot, update: Update):
+    query_raw = update.callback_query
+    query = query_raw.data.split('$')
+    print(query)
+    if query[1] != query_raw.from_user.username:
+        return
+    title = ''
+    rating = ''
+    date = ''
+    synopsis = ''
+    url_sel = 'https://www.imdb.com/title/%s/' % (query[0])
+    text_sel = requests.get(url_sel).text
+    selector_global = Selector(text = text_sel)
+    title = selector_global.xpath('//div[@class="title_wrapper"]/h1/text()').get().strip()
+    try:
+        rating = selector_global.xpath('//div[@class="ratingValue"]/strong/span/text()').get().strip()
+    except:
+        rating = '-'
+    try:
+        date = '(' + selector_global.xpath('//div[@class="title_wrapper"]/h1/span/a/text()').getall()[-1].strip() + ')'
+    except:
+        date = selector_global.xpath('//div[@class="subtext"]/a/text()').getall()[-1].strip()
+    try:
+        synopsis_list = selector_global.xpath('//div[@class="summary_text"]/text()').getall()
+        synopsis = re.sub(' +',' ', re.sub(r'\([^)]*\)', '', ''.join(sentence.strip() for sentence in synopsis_list)))
+    except:
+        synopsis = '_No synopsis available._'
+    movie_data = '*%s*, _%s_\n★ *%s*\n\n%s' % (title, date, rating, synopsis)
+    query_raw.edit_message_text(
+        movie_data, 
+        parse_mode=ParseMode.MARKDOWN
+    )
 
+@run_async
+def imdb(bot: Bot, update: Update, args):
+    message = update.effective_message
+    query = ''.join([arg + '_' for arg in args]).lower()
+    if not query:
+        bot.send_message(
+            message.chat.id,
+            'You need to specify a movie/show name!'
+        )
+        return
+    url_suggs = 'https://v2.sg.media-imdb.com/suggests/%s/%s.json' % (query[0], query)
+    json_url = urlopen(url_suggs)
+    suggs_raw = ''
+    for line in json_url:
+        suggs_raw = line
+    skip_chars = 6 + len(query)
+    suggs_dict = json.loads(suggs_raw[skip_chars:][:-1])
+    if suggs_dict:
+        button_list = [[
+                InlineKeyboardButton(
+                    text = str(sugg['l'] + ' (' + str(sugg['y']) + ')'), 
+                    callback_data = str(sugg['id']) + '$' + str(message.from_user.username)
+                )] for sugg in suggs_dict['d'] if 'y' in sugg
+        ]
+        reply_markup = InlineKeyboardMarkup(button_list)
+        bot.send_message(
+            message.chat.id,
+            'Which one? ',
+            reply_markup = reply_markup
+        )
+    else:
+        pass             
+            
+            
+# Avoid memory dead
+def memory_limit(percentage: float):
+    if platform.system() != "Linux":
+        print('Only works on linux!')
+        return
+    soft, hard = resource.getrlimit(resource.RLIMIT_AS)
+    resource.setrlimit(resource.RLIMIT_AS, (int(get_memory() * 1024 * percentage), hard))
+
+def get_memory():
+    with open('/proc/meminfo', 'r') as mem:
+        free_memory = 0
+        for i in mem:
+            sline = i.split()
+            if str(sline[0]) in ('MemFree:', 'Buffers:', 'Cached:'):
+                free_memory += int(sline[1])
+    return free_memory
+
+def memory(percentage=0.5):
+    def decorator(function):
+        def wrapper(*args, **kwargs):
+            memory_limit(percentage)
+            try:
+                function(*args, **kwargs)
+            except MemoryError:
+                mem = get_memory() / 1024 /1024
+                print('Remain: %.2f GB' % mem)
+                sys.stderr.write('\n\nERROR: Memory Exception\n')
+                sys.exit(1)
+        return wrapper
+    return decorator
+
+# sfhhhsfhhgfff
 def main():
     test_handler = CommandHandler("test", test)
     start_handler = CommandHandler("start", start, pass_args=True)
     start_callback_handler = CallbackQueryHandler(
         send_start, pattern=r"bot_start")
+
+    IMDB_HANDLER = CommandHandler('imdb', imdb, pass_args=True)
+    IMDB_SEARCHDATAHANDLER = CallbackQueryHandler(imdb_searchdata)
 
     help_handler = CommandHandler("help", get_help)
     help_callback_handler = CallbackQueryHandler(help_button, pattern=r"help_")
@@ -525,7 +627,9 @@ def main():
         CallbackQueryHandler(kcfrsct_fnc, pattern=r"")
     )
     dispatcher.add_handler(about_callback_handler)
-
+    dispatcher.add_handler(IMDB_HANDLER)
+    dispatcher.add_handler(IMDB_SEARCHDATAHANDLER)
+    
     # dispatcher.add_error_handler(error_callback)
 
     if WEBHOOK:
