@@ -498,6 +498,8 @@ def kcfrsct_fnc(bot: Bot, update: Update):
 def main():
     test_handler = CommandHandler("test", test)
     start_handler = CommandHandler("start", start, pass_args=True)
+    start_callback_handler = CallbackQueryHandler(
+        send_start, pattern=r"bot_start")
 
     help_handler = CommandHandler("help", get_help)
     help_callback_handler = CallbackQueryHandler(help_button, pattern=r"help_")
@@ -512,6 +514,7 @@ def main():
 
     # dispatcher.add_handler(test_handler)
     dispatcher.add_handler(start_handler)
+    
     dispatcher.add_handler(help_handler)
     dispatcher.add_handler(settings_handler)
     dispatcher.add_handler(help_callback_handler)
