@@ -136,7 +136,7 @@ def start(bot: Bot, update: Update, args: List[str]):
 @run_async.on_callback_query()
 async def cb_handler(bot: Bot, update: Update):
 
-    if query.data == "start_data":
+    if query.data == "start":
         await query.answer()
         keyboard = InlineKeyboardMarkup(
             [
