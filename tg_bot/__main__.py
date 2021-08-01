@@ -1,6 +1,16 @@
+import os
 import importlib
 import re
+import datetime
 from typing import Optional, List
+import resource
+import platform
+from sys import argv
+import traceback
+import requests
+from parsel import Selector
+import json
+from urllib.request import urlopen
 
 from telegram import Message, Chat, Update, Bot, User
 from telegram import ParseMode, InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
