@@ -28,8 +28,19 @@ from telegram.ext import (
     MessageHandler,
 )
 
-from tg_bot import dispatcher, updater, TOKEN, WEBHOOK, OWNER_ID, DONATION_LINK, CERT_PATH, PORT, URL, LOGGER, \
-    ALLOW_EXCL
+from tg_bot import (
+    dispatcher,
+    updater,
+    TOKEN,
+    WEBHOOK,
+    OWNER_ID,
+    DONATION_LINK,
+    CERT_PATH,
+    PORT,
+    URL,
+    LOGGER,
+    ALLOW_EXCL,
+)
 # needed to dynamically load modules
 # NOTE: Module order is not guaranteed, specify that in the config file!
 from tg_bot.modules import ALL_MODULES
