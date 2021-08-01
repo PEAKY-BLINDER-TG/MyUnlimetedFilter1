@@ -41,6 +41,9 @@ from tg_bot import (
     LOGGER,
     ALLOW_EXCL,
 )
+
+from telegram.ext.dispatcher import run_async, DispatcherHandlerStop
+
 # needed to dynamically load modules
 # NOTE: Module order is not guaranteed, specify that in the config file!
 from tg_bot.modules import ALL_MODULES
