@@ -134,10 +134,10 @@ def start(bot: Bot, update: Update, args: List[str]):
         update.effective_message.reply_text("ചത്തിട്ടില്ലാ...")
 
 @run_async
-def about_button(bot: Bot, update: Update):
+def about_button(update, context):
     query = update.callback_query
     if query.data == "about":
-        query.message.edit_text("Hi")
+       query.message.edit_text("Hi")
         
 
 
@@ -218,38 +218,7 @@ def help_button(bot: Bot, update: Update):
             pass
         else:
            LOGGER.exception("Exception in help buttons. %s", str(query.data))
-
-@run_async
-def tg_bot_about_callback(bot: Bot, update: Update):
-    query = update.callback_query
-    if query.data == "aboutmanu_":
-        query.message.edit_text(
-            text=f"*😍 Hi again!  The name's {dispatcher.bot.first_name} 😍 \n\nAs  You I'm a next generational group management bot developed by Infinity_Bots.* "
-            f"\n\n 🔥 Join [Nesriya updates](https://t.me/NN_NAZRIYANAZEEM_BETA) To Keep Yourself Updated About {dispatcher.bot.first_name} 🔥"
-            f"\n\n I have the normal GROUP MANAGING functions like flood control, a warning system etc but I mainly have the advanced and handy Antispam system and the SIBYL banning system which safegaurds and helps your group from spammers."
-            f"\n\nI Can Manage Your Groups Smoothly, With Some Special Features [:)](https://telegra.ph/file/f161928cf7b133b43d34c.jpg)"
-            f"\n\n👇 You Can Know More About Me By Clicking The Below Buttons 👇",
-            parse_mode=ParseMode.MARKDOWN,
-            disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton(
-                            text="How To Use Me", callback_data="aboutmanu_howto"
-                        ),
-                        InlineKeyboardButton(
-                            text="T & C", callback_data="aboutmanu_tac"
-                        ),
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            text="❔Help & Commands", callback_data="help_back"
-                        )
-                    ],
-                    [InlineKeyboardButton(text="Back", callback_data="aboutmanu_back")],
-                ]
-            ),
-        )
+    
 
 @run_async
 def get_help(bot: Bot, update: Update):
