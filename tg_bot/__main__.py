@@ -3,6 +3,7 @@ import re
 from typing import Optional, List
 
 from telegram import (
+    Bot,
     Chat,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
