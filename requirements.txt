@@ -16,4 +16,5 @@ gTTS
 zalgo_text
 pynewtonmath
 bs4
+parsel
 telegraph
