@@ -495,7 +495,7 @@ def imdb(bot: Bot, update: Update, args):
     if not query:
         bot.send_message(
             message.chat.id,
-            'You need to specify a movie/show name!'
+            'Enter Movie Name Eg :- `/movie kgf`'
         )
         return
     url_suggs = 'https://v2.sg.media-imdb.com/suggests/%s/%s.json' % (query[0], query)
@@ -513,9 +513,10 @@ def imdb(bot: Bot, update: Update, args):
                 )] for sugg in suggs_dict['d'] if 'y' in sugg
         ]
         reply_markup = InlineKeyboardMarkup(button_list)
+        
         bot.send_message(
             message.chat.id,
-            'Which one? ',
+            '🔍Check Your Spelling🔎\n    ⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️',
             reply_markup = reply_markup
         )
     else:
