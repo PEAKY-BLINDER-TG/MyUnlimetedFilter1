@@ -3,7 +3,7 @@ from typing import Optional, List
 from telegram import ParseMode
 from telegram import Message, Chat, Update, Bot, User
 from telegram.error import BadRequest
-from telegram.ext import CommandHandler, Filters
+from telegram.ext import CommandHandler, Filters, CallbackQueryHandler
 from telegram.ext.dispatcher import run_async
 from telegram.utils.helpers import mention_html
 
