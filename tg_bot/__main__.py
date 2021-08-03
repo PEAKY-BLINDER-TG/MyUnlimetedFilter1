@@ -26,6 +26,8 @@ from tg_bot import dispatcher, updater, TOKEN, WEBHOOK, OWNER_ID, DONATION_LINK,
 from tg_bot.modules import ALL_MODULES
 from tg_bot.modules.helper_funcs.chat_status import is_user_admin
 from tg_bot.modules.helper_funcs.misc import paginate_modules
+from tg.modules.connection import connected
+from tg.modules.connection import connect_button
 
 PM_START_TEXT = """
 
@@ -161,10 +163,15 @@ def start(bot: Bot, update: Update, args: List[str]):
 
                 parse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(
                     [[InlineKeyboardButton(text="⭕️ Command Help ⭕️", url="https://t.me/{}?start=help".format(bot.username))],
-                     [InlineKeyboardButton(text="📢Updates", callback_data="help_back"), InlineKeyboardButton(text="❣️Video", callback_data="main_connect"), InlineKeyboardButton(text="🤠Credits", url="https://github.com/jithumon/tgbot/graphs/contributors")],
+                     [InlineKeyboardButton(text="📢Updates", callback_data="help_back"), InlineKeyboardButton(text="❣️Video", callback_data="main_connect), InlineKeyboardButton(text="🤠Credits", url="https://github.com/jithumon/tgbot/graphs/contributors")],
                      [InlineKeyboardButton(text="➕ Add me to your group ➕", url="t.me/{}?startgroup=true".format(bot.username)) ]]))
     else:
         update.effective_message.reply_text("ചത്തിട്ടില്ലാ...")
+
+
+def m_connect_button(bot, update):
+    bot.delete_message(update.effective_chat.id, update.effective_message.message_id)
+    connect_button(bot, update)
 
 
 # for test purposes
@@ -194,6 +201,7 @@ def error_callback(bot, update, error):
     except TelegramError:
         print(error)
         # handle all other telegram related errors
+
 
 
 @run_async
@@ -561,6 +569,7 @@ def main():
 
     donate_handler = CommandHandler("donate", donate)
     migrate_handler = MessageHandler(Filters.status_update.migrate, migrate_chats)
+    M_CONNECT_BTN_HANDLER = CallbackQueryHandler(m_connect_button, pattern=r"main_connect")
 
     # dispatcher.add_handler(test_handler)
     dispatcher.add_handler(start_handler)
@@ -573,9 +582,10 @@ def main():
     dispatcher.add_handler(
         CallbackQueryHandler(kcfrsct_fnc, pattern=r"")
     )
+    dispatcher.add_handler(M_CONNECT_BTN_HANDLER)
     dispatcher.add_handler(IMDB_HANDLER)
     dispatcher.add_handler(IMDB_SEARCHDATAHANDLER)
-    
+   
 
     # dispatcher.add_error_handler(error_callback)
 
