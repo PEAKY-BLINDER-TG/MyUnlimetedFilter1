@@ -15,8 +15,8 @@ from pyrogram.types import ChatPermissions, InlineKeyboardButton, InlineKeyboard
 from tg_bot import BOT_ID
 
 # from tg_bot import OWNER_ID as SUDO_USERS
-from tg_bot.services.pyrogram import pbot
-from tg_bot.services.sql import forceSubscribe_sql as sql
+from tg_bot.bot.pyrogram import pbot
+from tg_bot.bot.sql import forceSubscribe_sql as sql
 
 logging.basicConfig(level=logging.INFO)
 
