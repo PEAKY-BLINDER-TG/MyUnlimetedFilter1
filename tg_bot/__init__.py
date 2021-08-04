@@ -40,6 +40,11 @@ if ENV:
         raise Exception("Your support users list does not contain valid integers.")
 
     try:
+        DRAGONS = set(int(x) for x in os.environ.get("DRAGONS", "").split())
+    except ValueError:
+        raise Exception("Your whitelisted users list does not contain valid integers.")
+    
+    try:
         WHITELIST_USERS = set(int(x) for x in os.environ.get("WHITELIST_USERS", "").split())
     except ValueError:
         raise Exception("Your whitelisted users list does not contain valid integers.")
