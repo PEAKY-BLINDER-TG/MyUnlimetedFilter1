@@ -2,7 +2,6 @@ import os
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.errors import UserNotParticipant
-from files import UPDATE_CHANNEL
 
 Motechyt = Client(
             "MT ID BOT",
