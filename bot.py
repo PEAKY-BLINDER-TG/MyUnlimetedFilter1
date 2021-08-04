@@ -1,22 +1,39 @@
-import pyrogram
+import os
+from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.errors import UserNotParticipant
+from files import UPDATE_CHANNEL
 
-import logging
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = llogging.getLogger("pyrogram").setLevel(logging.WARNING)ogging.getLogger(__name__)
+Motechyt = Client(
+            "MT ID BOT",
+            bot_token = os.environ["TOKEN"],
+            api_id = int(os.environ["API_ID"]),
+            api_hash = os.environ["API_HASH"]
+)
 
-from pyrogram import Client 
+# start and Update channel added
+@Motechyt.on_message(filters.private & filters.command("start"))
+async def start(bot, update):  
 
-if __name__ == "__main__" :
-    plugins = dict(
-        root="tg_bot"
-    )
-    mt_botz = Client(
-        "MT ID BOT",
-        bot_token=os.environ.get("TOKEN"),
-        api_id="1517558",
-        api_hash="7f6fbfd179b27e8f6188dccff9c196ee",
-        plugins=plugins,
-        workers=100
-    )
-    mt_botz.run()
+    text = f"""
+<b> 👋Hello {update.from_user.mention}</b>
+<b>I CAN GET ANY PUBLIC AND PRIVATE CHANNEL ID
+FORWARD A MESSAGE FROM YOUR CHANNEL TO GET YOUR CHANNEL ID.
+CLICK /ID GET YOUR ID
+CLICK /INFO GET YOUR TELEGRAM INFO </b>
+"""
+    reply_markup =  MT_START
+    await update.reply_text(
+        text=text,
+        disable_web_page_preview=True,
+        reply_markup=reply_markup
+  )
+
+# Button Controler 
+MT_START = InlineKeyboardMarkup(
+     [[
+        InlineKeyboardButton("🗣️Group", url=f"t.me/mo_tech_group"),
+        InlineKeyboardButton("📑Bot List", url=f"t.me/mo_tech_yt"),
+        InlineKeyboardButton("✳️Source", url=f"https://github.com/PR0FESS0R-99/ID-Bot")
+     ]]
+   )
