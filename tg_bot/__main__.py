@@ -393,6 +393,56 @@ def get_settings(bot: Bot, update: Update):
         send_settings(chat.id, user.id, True)
 
 
+# 👇👇👇👇👇👇👇👇👇[About]👇👇👇👇👇👇👇👇👇 #
+@run_async
+def help_button(bot: Bot, update: Update):
+    query = update.callback_query
+    mod_match = re.match(r"help_module\((.+?)\)", query.data)
+    prev_match = re.match(r"help_prev\((.+?)\)", query.data)
+    next_match = re.match(r"help_next\((.+?)\)", query.data)
+    about_match = re.match(r"about_back", query.data)
+    try:
+        if mod_match:
+            module = mod_match.group(1)
+            text = "Here is the help for the *{}* module:\n".format(HELPABLE[module].__mod_name__) \
+                   + HELPABLE[module].__help__
+            query.message.reply_text(text=text,
+                                     parse_mode=ParseMode.MARKDOWN,
+                                     reply_markup=InlineKeyboardMarkup(
+                                         [[InlineKeyboardButton(text="🔙 Back 🔙", callback_data="help_back")]]))
+
+        elif prev_match:
+            curr_page = int(prev_match.group(1))
+            query.message.reply_text(HELP_STRINGS,
+                                     parse_mode=ParseMode.MARKDOWN,
+                                     reply_markup=InlineKeyboardMarkup(
+                                         paginate_modules(curr_page - 1, HELPABLE, "help")))
+
+        elif next_match:
+            next_page = int(next_match.group(1))
+            query.message.reply_text(HELP_STRINGS,
+                                     parse_mode=ParseMode.MARKDOWN,
+                                     reply_markup=InlineKeyboardMarkup(
+                                         paginate_modules(next_page + 1, HELPABLE, "help")))
+
+        elif about_match:
+            query.message.reply_text(text=HELP_STRINGS,
+                                     parse_mode=ParseMode.MARKDOWN,
+                                     reply_markup=InlineKeyboardMarkup(paginate_modules(0, HELPABLE, "help")))
+
+        # ensure no spinny white circle
+        bot.answer_callback_query(query.id)
+        query.message.delete()
+    except BadRequest as excp:
+        if excp.message == "Message is not modified":
+            pass
+        elif excp.message == "Query_id_invalid":
+            pass
+        elif excp.message == "Message can't be deleted":
+            pass
+        else:
+            LOGGER.exception("Exception in help buttons. %s", str(query.data))
+# 👆👆👆👆👆👆👆👆👆👆👆👆👆[About]👆👆👆👆👆👆👆👆👆👆👆 #
 @run_async
 def donate(bot: Bot, update: Update):
     user = update.effective_message.from_user
@@ -564,6 +614,7 @@ def main():
 
     help_handler = CommandHandler("help", get_help)
     help_callback_handler = CallbackQueryHandler(help_button, pattern=r"help_")
+    about_callback_handler = CallbackQueryHandler(about_button, pattern=r"about_")
 
     settings_handler = CommandHandler("settings", get_settings)
     settings_callback_handler = CallbackQueryHandler(settings_button, pattern=r"stngs_")
@@ -577,6 +628,7 @@ def main():
     dispatcher.add_handler(help_handler)
     dispatcher.add_handler(settings_handler)
     dispatcher.add_handler(help_callback_handler)
+    dispatcher.add_handler(about_callback_handler)
     dispatcher.add_handler(settings_callback_handler)
     dispatcher.add_handler(migrate_handler)
     dispatcher.add_handler(donate_handler)
