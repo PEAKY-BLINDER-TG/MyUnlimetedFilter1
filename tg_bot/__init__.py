@@ -4,6 +4,7 @@ import sys
 
 import telegram.ext as tg
 from pyrogram import Client, errors
+from telethon import TelegramClient
 
 # enable logging
 logging.basicConfig(
