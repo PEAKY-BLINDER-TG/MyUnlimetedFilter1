@@ -397,10 +397,10 @@ def get_settings(bot: Bot, update: Update):
 @run_async
 def about_button(bot: Bot, update: Update):
     query = update.callback_query
-    mod_match = re.match(r"help_module\((.+?)\)", query.data)
-    prev_match = re.match(r"help_prev\((.+?)\)", query.data)
-    next_match = re.match(r"help_next\((.+?)\)", query.data)
-    about_match = re.match(r"about_back", query.data)
+    mod_match = re.match(r"about_module\((.+?)\)", query.data)
+    prev_match = re.match(r"about_prev\((.+?)\)", query.data)
+    next_match = re.match(r"about_next\((.+?)\)", query.data)
+    help_match = re.match(r"about_back", query.data)
     try:
         if mod_match:
             module = mod_match.group(1)
@@ -416,19 +416,19 @@ def about_button(bot: Bot, update: Update):
             query.message.reply_text(HELP_STRINGS,
                                      parse_mode=ParseMode.MARKDOWN,
                                      reply_markup=InlineKeyboardMarkup(
-                                         paginate_modules(curr_page - 1, HELPABLE, "help")))
+                                         paginate_modules(curr_page - 1, HELPABLE, "about")))
 
         elif next_match:
             next_page = int(next_match.group(1))
             query.message.reply_text(HELP_STRINGS,
                                      parse_mode=ParseMode.MARKDOWN,
                                      reply_markup=InlineKeyboardMarkup(
-                                         paginate_modules(next_page + 1, HELPABLE, "help")))
+                                         paginate_modules(next_page + 1, HELPABLE, "about")))
 
-        elif about_match:
+        elif help_match:
             query.message.reply_text(text=HELP_STRINGS,
                                      parse_mode=ParseMode.MARKDOWN,
-                                     reply_markup=InlineKeyboardMarkup(paginate_modules(0, HELPABLE, "help")))
+                                     reply_markup=InlineKeyboardMarkup(paginate_modules(0, HELPABLE, "about")))
 
         # ensure no spinny white circle
         bot.answer_callback_query(query.id)
