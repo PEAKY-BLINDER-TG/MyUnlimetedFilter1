@@ -134,8 +134,6 @@ dispatcher = updater.dispatcher
 ##############################
 
 
-dispatcher = updater.dispatcher
-
 SUDO_USERS = list(SUDO_USERS)
 WHITELIST_USERS = list(WHITELIST_USERS)
 SUPPORT_USERS = list(SUPPORT_USERS)
