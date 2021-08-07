@@ -405,7 +405,7 @@ def about(bot: Bot, update: Update):
 @run_async
 def about_button(bot: Bot, update: Update):
     query = update.callback_query
-    if query.data == "about_data"
+    if query.data == "about_data":
         text = """Hi"""
         query.message.reply_edit(text=text,
                                  parse_mode=ParseMode.MARKDOWN,
