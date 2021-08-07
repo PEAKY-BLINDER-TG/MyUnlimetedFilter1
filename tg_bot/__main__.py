@@ -406,11 +406,11 @@ def about(bot: Bot, update: Update):
 def about_button(bot: Bot, update: Update):
     query = update.callback_query
     if query.data == "about_data"
-         text = """Hi"""
-            query.message.reply_text(text=text,
-                                     parse_mode=ParseMode.MARKDOWN,
-                                     reply_markup=InlineKeyboardMarkup(
-                                         [[InlineKeyboardButton(text="Back", callback_data="help_back")]]))
+        text = """Hi"""
+        query.message.reply_edit(text=text,
+                                 parse_mode=ParseMode.MARKDOWN,
+                                 reply_markup=InlineKeyboardMarkup(
+                                 [[InlineKeyboardButton(text="Back", callback_data="help_back")]]))
                                                                        
 
 def migrate_chats(bot: Bot, update: Update):
