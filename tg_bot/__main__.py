@@ -399,7 +399,7 @@ def donate(bot: Bot, update: Update):
 
 @run_async
 def about(bot: Bot, update: Update):
-         update.effective_message.reply_text("{}".format(ABOUT_T))
+    update.effective_message.reply_text("{}".format(ABOUT_T))
 
 def migrate_chats(bot: Bot, update: Update):
     msg = update.effective_message  # type: Optional[Message]
