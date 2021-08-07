@@ -402,6 +402,17 @@ def donate(bot: Bot, update: Update):
 def about(bot: Bot, update: Update):
     update.effective_message.reply_text("{}".format(ABOUT_T))
 
+@run_async
+def about_button(bot: Bot, update: Update):
+    query = update.callback_query
+     if query_data == "about_data"
+         text = """Hi"""
+            query.message.reply_text(text=text,
+                                     parse_mode=ParseMode.MARKDOWN,
+                                     reply_markup=InlineKeyboardMarkup(
+                                         [[InlineKeyboardButton(text="Back", callback_data="help_back")]]))
+                                                                       
+
 def migrate_chats(bot: Bot, update: Update):
     msg = update.effective_message  # type: Optional[Message]
     if msg.migrate_to_chat_id:
@@ -455,6 +466,7 @@ def main():
     migrate_handler = MessageHandler(Filters.status_update.migrate, migrate_chats)
 
     about_handler = CommandHandler("about", about)
+    about_callback_handler = CallbackQueryHandler(about_button, pattern=r"about_data")
 
     # dispatcher.add_handler(test_handler)
     dispatcher.add_handler(start_handler)
@@ -468,6 +480,7 @@ def main():
         CallbackQueryHandler(kcfrsct_fnc, pattern=r"")
     )
     dispatcher.add_handler(about_handler)
+    dispatcher.add_handler(about_callback_handler)
     # dispatcher.add_error_handler(error_callback)
 
     if WEBHOOK:
