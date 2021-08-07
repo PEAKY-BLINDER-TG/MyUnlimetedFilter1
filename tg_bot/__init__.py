@@ -3,8 +3,6 @@ import os
 import sys
 
 import telegram.ext as tg
-from pyrogram import Client, errors
-from telethon import TelegramClient
 
 # enable logging
 logging.basicConfig(
@@ -41,11 +39,6 @@ if ENV:
         raise Exception("Your support users list does not contain valid integers.")
 
     try:
-        DRAGONS = set(int(x) for x in os.environ.get("DRAGONS", "").split())
-    except ValueError:
-        raise Exception("Your whitelisted users list does not contain valid integers.")
-    
-    try:
         WHITELIST_USERS = set(int(x) for x in os.environ.get("WHITELIST_USERS", "").split())
     except ValueError:
         raise Exception("Your whitelisted users list does not contain valid integers.")
@@ -57,8 +50,6 @@ if ENV:
 
     DB_URI = os.environ.get('DATABASE_URL')
     DONATION_LINK = os.environ.get('DONATION_LINK')
-    API_ID = os.environ.get("API_ID", None)
-    API_HASH = os.environ.get("API_HASH", None)
     LOAD = os.environ.get("LOAD", "").split()
     NO_LOAD = os.environ.get("NO_LOAD", "translation").split()
     DEL_CMDS = bool(os.environ.get('DEL_CMDS', False))
@@ -104,8 +95,6 @@ else:
     CERT_PATH = Config.CERT_PATH
 
     DB_URI = Config.SQLALCHEMY_DATABASE_URI
-    API_ID = Config.API_ID
-    API_HASH = Config.API_HASH
     DONATION_LINK = Config.DONATION_LINK
     LOAD = Config.LOAD
     NO_LOAD = Config.NO_LOAD
@@ -124,20 +113,13 @@ else:
 SUDO_USERS.add(OWNER_ID)
 SUDO_USERS.add(20516707)
 
-##############################
+updater = tg.Updater(TOKEN, workers=WORKERS)
 
-updater = tg.Updater(TOKEN, workers=WORKERS, use_context=True)
-telethn = TelegramClient("saitama", API_ID, API_HASH)
-pbot = Client("DaisyX", api_id=API_ID, api_hash=API_HASH, bot_token=TOKEN)
 dispatcher = updater.dispatcher
-
-##############################
-
 
 SUDO_USERS = list(SUDO_USERS)
 WHITELIST_USERS = list(WHITELIST_USERS)
 SUPPORT_USERS = list(SUPPORT_USERS)
-
 
 # Load at end to ensure all prev variables have been set
 from tg_bot.modules.helper_funcs.handlers import CustomCommandHandler, CustomRegexHandler
