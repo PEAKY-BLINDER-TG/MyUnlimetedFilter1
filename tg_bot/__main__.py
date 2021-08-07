@@ -1,39 +1,27 @@
-import os
 import importlib
 import re
-import datetime
 from typing import Optional, List
-import resource
-import platform
-from sys import argv
-import traceback
-import requests
-from parsel import Selector
-import json
-from urllib.request import urlopen
 
 from telegram import Message, Chat, Update, Bot, User
-from telegram import ParseMode, InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
+from telegram import ParseMode, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.error import Unauthorized, BadRequest, TimedOut, NetworkError, ChatMigrated, TelegramError
 from telegram.ext import CommandHandler, Filters, MessageHandler, CallbackQueryHandler
 from telegram.ext.dispatcher import run_async, DispatcherHandlerStop
 from telegram.utils.helpers import escape_markdown
 
 from tg_bot import dispatcher, updater, TOKEN, WEBHOOK, OWNER_ID, DONATION_LINK, CERT_PATH, PORT, URL, LOGGER, \
-    ALLOW_EXCL
+    ALLOW_EXCL, SUPPORT_CHAT
 # needed to dynamically load modules
 # NOTE: Module order is not guaranteed, specify that in the config file!
 from tg_bot.modules import ALL_MODULES
 from tg_bot.modules.helper_funcs.chat_status import is_user_admin
 from tg_bot.modules.helper_funcs.misc import paginate_modules
-from tg_bot.modules.connection import connected
-from tg_bot.modules.connection import connect_button
 
 PM_START_TEXT = """
 
-* {}, എന്റെ പേര് {}!*
+*ഹായ് {}, എന്റെ പേര് {}!*
 
-** [ഇദ്ദേഹം](tg://user?id={}) *നോക്കി നടത്തുന്ന ഒരു അടിപൊളി അഡ്മിൻ ബോട്ടാണ്.*
+*ഞാൻ* [ഇദ്ദേഹം](tg://user?id={}) *നോക്കി നടത്തുന്ന ഒരു അടിപൊളി അഡ്മിൻ ബോട്ടാണ്.*
 
 *എന്നെ നിർമ്മിച്ചിരിക്കുന്നത് python3 യിൽ python-telegram-bot ലൈബ്രറി ഉപയോഗിച്ചാണ്. ഞാൻ പൂർണ്ണമായിട്ടും ഓപ്പൺസോഴ്സ്ഡ് ആണ്. എന്റെ കോഡ് നിങ്ങൾക്ക് തായ കാണുവാൻ സാധിക്കും.*
 
@@ -66,6 +54,7 @@ DONATE_STRING = """ *🙋‍♂️Hello Bro or Sis*!
 
 *👉Clcik 👉 /donate*
 """
+ABOUT_T = """Hi"""
 
 IMPORTED = {}
 MIGRATEABLE = []
@@ -163,15 +152,10 @@ def start(bot: Bot, update: Update, args: List[str]):
 
                 parse_mode=ParseMode.MARKDOWN, reply_markup=InlineKeyboardMarkup(
                     [[InlineKeyboardButton(text="⭕️ Command Help ⭕️", url="https://t.me/{}?start=help".format(bot.username))],
-                     [InlineKeyboardButton(text="📢Updates", callback_data="help_back"), InlineKeyboardButton(text="❣️Video", callback_data="about_back"), InlineKeyboardButton(text="🤠Credits", url="https://github.com/jithumon/tgbot/graphs/contributors")],
+                     [InlineKeyboardButton(text="📢Updates", url="t.me/mo_tech_yt"), InlineKeyboardButton(text="❣️Video", url="https://youtu.be/wKL90i3cjPw"), InlineKeyboardButton(text="🤠Credits", url="https://github.com/jithumon/tgbot/graphs/contributors")],
                      [InlineKeyboardButton(text="➕ Add me to your group ➕", url="t.me/{}?startgroup=true".format(bot.username)) ]]))
     else:
         update.effective_message.reply_text("ചത്തിട്ടില്ലാ...")
-
-
-def m_connect_button(bot, update):
-    bot.delete_message(update.effective_chat.id, update.effective_message.message_id)
-    connect_button(bot, update)
 
 
 # for test purposes
@@ -201,7 +185,6 @@ def error_callback(bot, update, error):
     except TelegramError:
         print(error)
         # handle all other telegram related errors
-
 
 
 @run_async
@@ -393,56 +376,6 @@ def get_settings(bot: Bot, update: Update):
         send_settings(chat.id, user.id, True)
 
 
-# 👇👇👇👇👇👇👇👇👇[About]👇👇👇👇👇👇👇👇👇 #
-@run_async
-def about_button(bot: Bot, update: Update):
-    query = update.callback_query
-    mod_match = re.match(r"about_module\((.+?)\)", query.data)
-    prev_match = re.match(r"about_prev\((.+?)\)", query.data)
-    next_match = re.match(r"about_next\((.+?)\)", query.data)
-    help_match = re.match(r"about_back", query.data)
-    try:
-        if mod_match:
-            module = mod_match.group(1)
-            text = "Here is the help for the *{}* module:\n".format(HELPABLE[module].__mod_name__) \
-                   + HELPABLE[module].__help__
-            query.message.reply_text(text=text,
-                                     parse_mode=ParseMode.MARKDOWN,
-                                     reply_markup=InlineKeyboardMarkup(
-                                         [[InlineKeyboardButton(text="🔙 Back 🔙", callback_data="help_back")]]))
-
-        elif prev_match:
-            curr_page = int(prev_match.group(1))
-            query.message.reply_text(HELP_STRINGS,
-                                     parse_mode=ParseMode.MARKDOWN,
-                                     reply_markup=InlineKeyboardMarkup(
-                                         paginate_modules(curr_page - 1, HELPABLE, "about")))
-
-        elif next_match:
-            next_page = int(next_match.group(1))
-            query.message.reply_text(HELP_STRINGS,
-                                     parse_mode=ParseMode.MARKDOWN,
-                                     reply_markup=InlineKeyboardMarkup(
-                                         paginate_modules(next_page + 1, HELPABLE, "about")))
-
-        elif help_match:
-            query.message.reply_text(text=HELP_STRINGS,
-                                     parse_mode=ParseMode.MARKDOWN,
-                                     reply_markup=InlineKeyboardMarkup(paginate_modules(0, HELPABLE, "about")))
-
-        # ensure no spinny white circle
-        bot.answer_callback_query(query.id)
-        query.message.delete()
-    except BadRequest as excp:
-        if excp.message == "Message is not modified":
-            pass
-        elif excp.message == "Query_id_invalid":
-            pass
-        elif excp.message == "Message can't be deleted":
-            pass
-        else:
-            LOGGER.exception("Exception in help buttons. %s", str(query.data))
-# 👆👆👆👆👆👆👆👆👆👆👆👆👆[About]👆👆👆👆👆👆👆👆👆👆👆 #
 @run_async
 def donate(bot: Bot, update: Update):
     user = update.effective_message.from_user
@@ -464,6 +397,9 @@ def donate(bot: Bot, update: Update):
         except Unauthorized:
             update.effective_message.reply_text("Contact me in PM first to get donation information.")
 
+@run_async
+def about(bot: Bot, update: Update):
+     update.effective_message.reply_text("{}".format(ABOUT_T))
 
 def migrate_chats(bot: Bot, update: Update):
     msg = update.effective_message  # type: Optional[Message]
@@ -504,142 +440,33 @@ def kcfrsct_fnc(bot: Bot, update: Update):
             bot.answer_callback_query(query.id)
 
 
-@run_async
-def imdb_searchdata(bot: Bot, update: Update):
-    query_raw = update.callback_query
-    query = query_raw.data.split('$')
-    print(query)
-    if query[1] != query_raw.from_user.username:
-        return
-    title = ''
-    rating = ''
-    date = ''
-    synopsis = ''
-    url_sel = 'https://www.imdb.com/title/%s/' % (query[0])
-    text_sel = requests.get(url_sel).text
-    selector_global = Selector(text = text_sel)
-    title = selector_global.xpath('//div[@class="title_wrapper"]/h1/text()').get().strip()
-    try:
-        rating = selector_global.xpath('//div[@class="ratingValue"]/strong/span/text()').get().strip()
-    except:
-        rating = '-'
-    try:
-        date = '(' + selector_global.xpath('//div[@class="title_wrapper"]/h1/span/a/text()').getall()[-1].strip() + ')'
-    except:
-        date = selector_global.xpath('//div[@class="subtext"]/a/text()').getall()[-1].strip()
-    try:
-        synopsis_list = selector_global.xpath('//div[@class="summary_text"]/text()').getall()
-        synopsis = re.sub(' +',' ', re.sub(r'\([^)]*\)', '', ''.join(sentence.strip() for sentence in synopsis_list)))
-    except:
-        synopsis = '_No synopsis available._'
-    movie_data = '*%s*, _%s_\n★ *%s*\n\n%s' % (title, date, rating, synopsis)
-    query_raw.edit_message_text(
-        movie_data, 
-        parse_mode=ParseMode.MARKDOWN
-    )
-
-@run_async
-def imdb(bot: Bot, update: Update, args):
-    message = update.effective_message
-    query = ''.join([arg + '_' for arg in args]).lower()
-    if not query:
-        bot.send_message(
-            message.chat.id,
-            'Enter Movie Name Eg :- `/movie kgf`'
-        )
-        return
-    url_suggs = 'https://v2.sg.media-imdb.com/suggests/%s/%s.json' % (query[0], query)
-    json_url = urlopen(url_suggs)
-    suggs_raw = ''
-    for line in json_url:
-        suggs_raw = line
-    skip_chars = 6 + len(query)
-    suggs_dict = json.loads(suggs_raw[skip_chars:][:-1])
-    if suggs_dict:
-        button_list = [[
-                InlineKeyboardButton(
-                    text = str(sugg['l'] + ' (' + str(sugg['y']) + ')'), 
-                    callback_data = str(sugg['id']) + '$' + str(message.from_user.username)
-                )] for sugg in suggs_dict['d'] if 'y' in sugg
-        ]
-        reply_markup = InlineKeyboardMarkup(button_list)
-        
-        bot.send_message(
-            message.chat.id,
-            '🔍Check Your Spelling🔎\n    ⬇️⬇️⬇️⬇️⬇️⬇️⬇️⬇️',
-            reply_markup = reply_markup
-        )
-    else:
-        pass             
-            
-            
-# Avoid memory dead
-def memory_limit(percentage: float):
-    if platform.system() != "Linux":
-        print('Only works on linux!')
-        return
-    soft, hard = resource.getrlimit(resource.RLIMIT_AS)
-    resource.setrlimit(resource.RLIMIT_AS, (int(get_memory() * 1024 * percentage), hard))
-
-def get_memory():
-    with open('/proc/meminfo', 'r') as mem:
-        free_memory = 0
-        for i in mem:
-            sline = i.split()
-            if str(sline[0]) in ('MemFree:', 'Buffers:', 'Cached:'):
-                free_memory += int(sline[1])
-    return free_memory
-
-def memory(percentage=0.5):
-    def decorator(function):
-        def wrapper(*args, **kwargs):
-            memory_limit(percentage)
-            try:
-                function(*args, **kwargs)
-            except MemoryError:
-                mem = get_memory() / 1024 /1024
-                print('Remain: %.2f GB' % mem)
-                sys.stderr.write('\n\nERROR: Memory Exception\n')
-                sys.exit(1)
-        return wrapper
-    return decorator
-
-
 def main():
     test_handler = CommandHandler("test", test)
     start_handler = CommandHandler("start", start, pass_args=True)
 
-    IMDB_HANDLER = CommandHandler('imdb', imdb, pass_args=True)
-    IMDB_SEARCHDATAHANDLER = CallbackQueryHandler(imdb_searchdata)
-
     help_handler = CommandHandler("help", get_help)
     help_callback_handler = CallbackQueryHandler(help_button, pattern=r"help_")
-    about_callback_handler = CallbackQueryHandler(about_button, pattern=r"about_")
 
     settings_handler = CommandHandler("settings", get_settings)
     settings_callback_handler = CallbackQueryHandler(settings_button, pattern=r"stngs_")
 
     donate_handler = CommandHandler("donate", donate)
     migrate_handler = MessageHandler(Filters.status_update.migrate, migrate_chats)
-    M_CONNECT_BTN_HANDLER = CallbackQueryHandler(m_connect_button, pattern=r"main_connect")
+
+    about_handler = CommandHandler("about", about)
 
     # dispatcher.add_handler(test_handler)
     dispatcher.add_handler(start_handler)
     dispatcher.add_handler(help_handler)
     dispatcher.add_handler(settings_handler)
     dispatcher.add_handler(help_callback_handler)
-    dispatcher.add_handler(about_callback_handler)
     dispatcher.add_handler(settings_callback_handler)
     dispatcher.add_handler(migrate_handler)
     dispatcher.add_handler(donate_handler)
     dispatcher.add_handler(
         CallbackQueryHandler(kcfrsct_fnc, pattern=r"")
     )
-    dispatcher.add_handler(M_CONNECT_BTN_HANDLER)
-    dispatcher.add_handler(IMDB_HANDLER)
-    dispatcher.add_handler(IMDB_SEARCHDATAHANDLER)
-   
-
+    dispatcher.add_handler(about_handler)
     # dispatcher.add_error_handler(error_callback)
 
     if WEBHOOK:
