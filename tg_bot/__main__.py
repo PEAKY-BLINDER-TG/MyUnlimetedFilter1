@@ -397,6 +397,7 @@ def donate(bot: Bot, update: Update):
         except Unauthorized:
             update.effective_message.reply_text("Contact me in PM first to get donation information.")
 
+
 @run_async
 def about(bot: Bot, update: Update):
     update.effective_message.reply_text("{}".format(ABOUT_T))
